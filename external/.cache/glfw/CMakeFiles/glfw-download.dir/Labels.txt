@@ -1,14 +1,14 @@
 # Target labels
  glfw-download
 # Source files and their labels
-C:/Dev/EngineForAnimationCourse/external/.cache/glfw/CMakeFiles/glfw-download
-C:/Dev/EngineForAnimationCourse/external/.cache/glfw/CMakeFiles/348a56fa66aa08285112e5836da14efb/glfw-download.rule
-C:/Dev/EngineForAnimationCourse/external/.cache/glfw/CMakeFiles/04854dc552b1d756b34806e04cfe8c47/glfw-download-complete.rule
-C:/Dev/EngineForAnimationCourse/external/.cache/glfw/CMakeFiles/e78e77f0bd680b46414144f1ef510be5/glfw-download-install.rule
-C:/Dev/EngineForAnimationCourse/external/.cache/glfw/CMakeFiles/e78e77f0bd680b46414144f1ef510be5/glfw-download-mkdir.rule
-C:/Dev/EngineForAnimationCourse/external/.cache/glfw/CMakeFiles/e78e77f0bd680b46414144f1ef510be5/glfw-download-download.rule
-C:/Dev/EngineForAnimationCourse/external/.cache/glfw/CMakeFiles/e78e77f0bd680b46414144f1ef510be5/glfw-download-update.rule
-C:/Dev/EngineForAnimationCourse/external/.cache/glfw/CMakeFiles/e78e77f0bd680b46414144f1ef510be5/glfw-download-patch.rule
-C:/Dev/EngineForAnimationCourse/external/.cache/glfw/CMakeFiles/e78e77f0bd680b46414144f1ef510be5/glfw-download-configure.rule
-C:/Dev/EngineForAnimationCourse/external/.cache/glfw/CMakeFiles/e78e77f0bd680b46414144f1ef510be5/glfw-download-build.rule
-C:/Dev/EngineForAnimationCourse/external/.cache/glfw/CMakeFiles/e78e77f0bd680b46414144f1ef510be5/glfw-download-test.rule
+C:/Users/elikk/Desktop/ASS3/EngineForAnimationCourse/external/.cache/glfw/CMakeFiles/glfw-download
+C:/Users/elikk/Desktop/ASS3/EngineForAnimationCourse/external/.cache/glfw/CMakeFiles/b0b95c28c6b74546dc27d1384fcfc6fd/glfw-download.rule
+C:/Users/elikk/Desktop/ASS3/EngineForAnimationCourse/external/.cache/glfw/CMakeFiles/30ca381f1b9cc1c70408deb0f5d5c5f0/glfw-download-complete.rule
+C:/Users/elikk/Desktop/ASS3/EngineForAnimationCourse/external/.cache/glfw/CMakeFiles/2c9dd3d9f684ac4c7cbd9e101d3c76ae/glfw-download-install.rule
+C:/Users/elikk/Desktop/ASS3/EngineForAnimationCourse/external/.cache/glfw/CMakeFiles/2c9dd3d9f684ac4c7cbd9e101d3c76ae/glfw-download-mkdir.rule
+C:/Users/elikk/Desktop/ASS3/EngineForAnimationCourse/external/.cache/glfw/CMakeFiles/2c9dd3d9f684ac4c7cbd9e101d3c76ae/glfw-download-download.rule
+C:/Users/elikk/Desktop/ASS3/EngineForAnimationCourse/external/.cache/glfw/CMakeFiles/2c9dd3d9f684ac4c7cbd9e101d3c76ae/glfw-download-update.rule
+C:/Users/elikk/Desktop/ASS3/EngineForAnimationCourse/external/.cache/glfw/CMakeFiles/2c9dd3d9f684ac4c7cbd9e101d3c76ae/glfw-download-patch.rule
+C:/Users/elikk/Desktop/ASS3/EngineForAnimationCourse/external/.cache/glfw/CMakeFiles/2c9dd3d9f684ac4c7cbd9e101d3c76ae/glfw-download-configure.rule
+C:/Users/elikk/Desktop/ASS3/EngineForAnimationCourse/external/.cache/glfw/CMakeFiles/2c9dd3d9f684ac4c7cbd9e101d3c76ae/glfw-download-build.rule
+C:/Users/elikk/Desktop/ASS3/EngineForAnimationCourse/external/.cache/glfw/CMakeFiles/2c9dd3d9f684ac4c7cbd9e101d3c76ae/glfw-download-test.rule

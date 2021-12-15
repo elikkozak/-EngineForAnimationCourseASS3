@@ -1,44 +1,44 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="16.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <CustomBuild Include="C:\Dev\EngineForAnimationCourse\external\.cache\glfw\CMakeFiles\e78e77f0bd680b46414144f1ef510be5\glfw-download-mkdir.rule">
+    <CustomBuild Include="C:\Users\elikk\Desktop\ASS3\EngineForAnimationCourse\external\.cache\glfw\CMakeFiles\2c9dd3d9f684ac4c7cbd9e101d3c76ae\glfw-download-mkdir.rule">
       <Filter>CMake Rules</Filter>
     </CustomBuild>
-    <CustomBuild Include="C:\Dev\EngineForAnimationCourse\external\.cache\glfw\CMakeFiles\e78e77f0bd680b46414144f1ef510be5\glfw-download-download.rule">
+    <CustomBuild Include="C:\Users\elikk\Desktop\ASS3\EngineForAnimationCourse\external\.cache\glfw\CMakeFiles\2c9dd3d9f684ac4c7cbd9e101d3c76ae\glfw-download-download.rule">
       <Filter>CMake Rules</Filter>
     </CustomBuild>
-    <CustomBuild Include="C:\Dev\EngineForAnimationCourse\external\.cache\glfw\CMakeFiles\e78e77f0bd680b46414144f1ef510be5\glfw-download-update.rule">
+    <CustomBuild Include="C:\Users\elikk\Desktop\ASS3\EngineForAnimationCourse\external\.cache\glfw\CMakeFiles\2c9dd3d9f684ac4c7cbd9e101d3c76ae\glfw-download-update.rule">
       <Filter>CMake Rules</Filter>
     </CustomBuild>
-    <CustomBuild Include="C:\Dev\EngineForAnimationCourse\external\.cache\glfw\CMakeFiles\e78e77f0bd680b46414144f1ef510be5\glfw-download-patch.rule">
+    <CustomBuild Include="C:\Users\elikk\Desktop\ASS3\EngineForAnimationCourse\external\.cache\glfw\CMakeFiles\2c9dd3d9f684ac4c7cbd9e101d3c76ae\glfw-download-patch.rule">
       <Filter>CMake Rules</Filter>
     </CustomBuild>
-    <CustomBuild Include="C:\Dev\EngineForAnimationCourse\external\.cache\glfw\CMakeFiles\e78e77f0bd680b46414144f1ef510be5\glfw-download-configure.rule">
+    <CustomBuild Include="C:\Users\elikk\Desktop\ASS3\EngineForAnimationCourse\external\.cache\glfw\CMakeFiles\2c9dd3d9f684ac4c7cbd9e101d3c76ae\glfw-download-configure.rule">
       <Filter>CMake Rules</Filter>
     </CustomBuild>
-    <CustomBuild Include="C:\Dev\EngineForAnimationCourse\external\.cache\glfw\CMakeFiles\e78e77f0bd680b46414144f1ef510be5\glfw-download-build.rule">
+    <CustomBuild Include="C:\Users\elikk\Desktop\ASS3\EngineForAnimationCourse\external\.cache\glfw\CMakeFiles\2c9dd3d9f684ac4c7cbd9e101d3c76ae\glfw-download-build.rule">
       <Filter>CMake Rules</Filter>
     </CustomBuild>
-    <CustomBuild Include="C:\Dev\EngineForAnimationCourse\external\.cache\glfw\CMakeFiles\e78e77f0bd680b46414144f1ef510be5\glfw-download-install.rule">
+    <CustomBuild Include="C:\Users\elikk\Desktop\ASS3\EngineForAnimationCourse\external\.cache\glfw\CMakeFiles\2c9dd3d9f684ac4c7cbd9e101d3c76ae\glfw-download-install.rule">
       <Filter>CMake Rules</Filter>
     </CustomBuild>
-    <CustomBuild Include="C:\Dev\EngineForAnimationCourse\external\.cache\glfw\CMakeFiles\e78e77f0bd680b46414144f1ef510be5\glfw-download-test.rule">
+    <CustomBuild Include="C:\Users\elikk\Desktop\ASS3\EngineForAnimationCourse\external\.cache\glfw\CMakeFiles\2c9dd3d9f684ac4c7cbd9e101d3c76ae\glfw-download-test.rule">
       <Filter>CMake Rules</Filter>
     </CustomBuild>
-    <CustomBuild Include="C:\Dev\EngineForAnimationCourse\external\.cache\glfw\CMakeFiles\04854dc552b1d756b34806e04cfe8c47\glfw-download-complete.rule">
+    <CustomBuild Include="C:\Users\elikk\Desktop\ASS3\EngineForAnimationCourse\external\.cache\glfw\CMakeFiles\30ca381f1b9cc1c70408deb0f5d5c5f0\glfw-download-complete.rule">
       <Filter>CMake Rules</Filter>
     </CustomBuild>
-    <CustomBuild Include="C:\Dev\EngineForAnimationCourse\external\.cache\glfw\CMakeFiles\348a56fa66aa08285112e5836da14efb\glfw-download.rule">
+    <CustomBuild Include="C:\Users\elikk\Desktop\ASS3\EngineForAnimationCourse\external\.cache\glfw\CMakeFiles\b0b95c28c6b74546dc27d1384fcfc6fd\glfw-download.rule">
       <Filter>CMake Rules</Filter>
     </CustomBuild>
-    <CustomBuild Include="C:\Dev\EngineForAnimationCourse\external\.cache\glfw\CMakeLists.txt" />
+    <CustomBuild Include="C:\Users\elikk\Desktop\ASS3\EngineForAnimationCourse\external\.cache\glfw\CMakeLists.txt" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="C:\Dev\EngineForAnimationCourse\external\.cache\glfw\CMakeFiles\glfw-download" />
+    <None Include="C:\Users\elikk\Desktop\ASS3\EngineForAnimationCourse\external\.cache\glfw\CMakeFiles\glfw-download" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="CMake Rules">
-      <UniqueIdentifier>{14B38905-42ED-3F46-B672-BE83CD787268}</UniqueIdentifier>
+      <UniqueIdentifier>{C6AD2710-40AA-3D45-847C-E2B3283C59BC}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>
