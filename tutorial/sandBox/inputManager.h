@@ -72,8 +72,13 @@ static void glfw_mouse_press(GLFWwindow* window, int button, int action, int mod
 static void glfw_mouse_scroll(GLFWwindow* window, double x, double y)
 {
 	Renderer* rndr = (Renderer*)glfwGetWindowUserPointer(window);
-	if(rndr->IsPicked())
-		rndr->GetScene()->data().MyScale(Eigen::Vector3d(1 + y * 0.01,1 + y * 0.01,1+y*0.01));
+	if (rndr->IsPicked()) {
+		if (rndr->GetScene()->selected_data_index > 0) {
+			rndr->GetScene()->data(1).TranslateInSystem(rndr->GetScene()->GetRotation(),Eigen::Vector3d(0, 0, -y * 0.03));
+		}
+		else
+			rndr->GetScene()->data().TranslateInSystem(rndr->GetScene()->GetRotation(), Eigen::Vector3d(0, 0, -y * 0.03));
+	}
 	else
 		rndr->GetScene()->MyTranslate(Eigen::Vector3d(0,0, - y * 0.03),true);
 }
@@ -101,6 +106,7 @@ static void glfw_key_callback(GLFWwindow* window, int key, int scancode, int act
 {
 	Renderer* rndr = (Renderer*) glfwGetWindowUserPointer(window);
 	SandBox* scn = (SandBox*)rndr->GetScene();
+	Eigen::Vector3d O = (scn->data_list[1].MakeTransd() * Eigen::Vector4d(0, 0, 0, 1)).head(3);
 	if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
 		glfwSetWindowShouldClose(window, GL_TRUE);
 
@@ -113,10 +119,18 @@ static void glfw_key_callback(GLFWwindow* window, int key, int scancode, int act
 			rndr->core().is_animating = !rndr->core().is_animating;
 			break;
 		}
+		case 'D':
+		case 'd':
+		{
+			Eigen::Vector3d destination = (scn->data_list[0].MakeTransd() * Eigen::Vector4d(0, 0, 0, 1)).head(3);
+			std::cout << "destination position: (" << destination.transpose() << ")" << std::endl;
+			break;
+		}
 		case 'F':
 		case 'f':
 		{
-			scn->data().set_face_based(!scn->data().face_based);
+			//scn->data().set_face_based(!scn->data().face_based);
+			scn->fix_myTip();
 			break;
 		}
 		case 'I':
@@ -138,10 +152,38 @@ static void glfw_key_callback(GLFWwindow* window, int key, int scancode, int act
 			rndr->core().orthographic = !rndr->core().orthographic;
 			break;
 		}
+		case 'P':
+		case 'p':
+		{
+			int index = scn->selected_data_index;
+			Eigen::Matrix3d mat_rot;
+			if (index == -1)
+				mat_rot = scn->GetRotation().block(0, 0, 3, 3);
+			else
+				scn->data_list[index].GetRotation().block(0, 0, 3, 3);
+			std::cout << "selected data index is  " << index << ": " << std::endl;
+			std::cout << mat_rot << std::endl;
+			break;
+		}
 		case 'T':
 		case 't':
 		{
-			rndr->core().toggle(scn->data().show_faces);
+			// Eigen::Vector3d tip;
+			// std::cout << "tip position: " << std::endl;
+			// for (int i = scn->num_of_links; i >= 1; i--) {
+			// 	tip = (scn->data_list[i].GetRotation() * Eigen::Vector3d(0, 0, 1.6));
+			// 	for(int j = i-1 ; j >= 1 ; j--)
+			// 	{
+			// 		tip = scn->data_list[j].GetRotation() * (Eigen::Vector3d(0, 0, 1.6) + tip);
+			// 	}
+			// 	std::cout << " (" << tip.transpose() << " )";
+			// }
+			// std::cout << "\n";
+
+			for (int i = 0; i <= scn->num_of_links; i++) {
+				std::cout << scn->tip_pos[i].transpose() << std::endl;
+			}
+			//rndr->core().toggle(scn->data().show_faces);
 			break;
 		}
 		case '[':
@@ -165,20 +207,36 @@ static void glfw_key_callback(GLFWwindow* window, int key, int scancode, int act
 			rndr->TranslateCamera(Eigen::Vector3f(0, 0, -0.03f));
 			break;
 		case GLFW_KEY_UP:
-			rndr->TranslateCamera(Eigen::Vector3f(0, 0.01f,0));
+			//scn->data().TranslateInSystem(scn->GetRotation(), Eigen::Vector3d(0, 0, 0.8));
+
+			// scn->data().MyRotate(/*(scn->MakeTransd() * scn->data().MakeTransd()).block<3, 3>(0, 0),*/ Eigen::Vector3d(1, 0, 0), 0.05);
+			//scn->data().TranslateInSystem(scn->GetRotation(), Eigen::Vector3d(0, 0, -0.8));
+			scn->data().RotateInEuler(Eigen::Vector3d(1, 0, 0), 0.05,false);
+
+			//rndr->TranslateCamera(Eigen::Vector3f(0, 0.01f,0));
 			break;
 		case GLFW_KEY_DOWN:
-			rndr->TranslateCamera(Eigen::Vector3f(0, -0.01f,0));
+			// scn->data().MyRotate(/*(scn->MakeTransd() * scn->data().MakeTransd()).block<3, 3>(0, 0),*/ Eigen::Vector3d(1, 0, 0), -0.05);
+			scn->data().RotateInEuler(Eigen::Vector3d(1, 0, 0), -0.05,false);
+
+			//rndr->TranslateCamera(Eigen::Vector3f(0, -0.01f,0));
 
 			break;
 		case GLFW_KEY_LEFT:
-				rndr->TranslateCamera(Eigen::Vector3f(-0.01f, 0,0));
+			// scn->data().RotateInSystem((scn->MakeTransd() * scn->data().MakeTransd()), Eigen::Vector3d(0, 0, 1), 0.05);
+			scn->data().RotateInEuler(Eigen::Vector3d(0, 0, 1), 0.05,true);
+
+				//rndr->TranslateCamera(Eigen::Vector3f(-0.01f, 0,0));
 			break;
 		case GLFW_KEY_RIGHT:
-			rndr->TranslateCamera(Eigen::Vector3f(0.01f, 0, 0));
+			// scn->data().RotateInSystem((scn->MakeTransd() * scn->data().MakeTransd()), Eigen::Vector3d(0, 0, 1), -0.05);
+			scn->data().RotateInEuler(Eigen::Vector3d(0, 0,1 ), -0.05,true);
+
+			//rndr->TranslateCamera(Eigen::Vector3f(0.01f, 0, 0));
 			break;
 		case ' ':
-
+			//scn->CCD();
+			scn->Fabrik();
 			break;
 		
 		default: 

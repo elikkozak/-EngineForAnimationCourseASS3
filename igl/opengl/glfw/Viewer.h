@@ -134,11 +134,17 @@ public:
     std::vector<ViewerData> data_list;
 	
 	std::vector<int> parents;
+    std::vector<Eigen::Vector3d> tip_pos;
 
     size_t selected_data_index;
     int next_data_id;
 	bool isPicked;
 	bool isActive;
+
+    int num_of_links = 1;
+    void CCD();
+    void Fabrik();
+    void fix_myTip();
 
     
 

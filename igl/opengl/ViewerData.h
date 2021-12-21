@@ -16,6 +16,7 @@
 //#include <Eigen/Core>
 #include <memory>
 #include <vector>
+#include "igl/AABB.h"
 
 
 // Alec: This is a mesh class containing a variety of data types (normals,
@@ -49,6 +50,8 @@ public:
 
   // Change the visualization mode, invalidating the cache if necessary
   IGL_INLINE void set_face_based(bool newvalue);
+
+  void drawAxis(Eigen::AlignedBox<double, 3> box,int i);
 
   // Helpers that can draw the most common meshes
   IGL_INLINE void set_mesh(const Eigen::MatrixXd& V, const Eigen::MatrixXi& F);
@@ -177,6 +180,8 @@ public:
   Eigen::Matrix<unsigned char,Eigen::Dynamic,Eigen::Dynamic> texture_A;
 
   // Overlays
+  igl::AABB<Eigen::MatrixXd, 3> tree;
+
 
   // Lines plotted over the scene
   // (Every row contains 9 doubles in the following format S_x, S_y, S_z, T_x, T_y, T_z, C_r, C_g, C_b),

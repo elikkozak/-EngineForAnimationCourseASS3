@@ -8,7 +8,6 @@
 
 SandBox::SandBox()
 {
-	
 
 }
 
@@ -38,13 +37,19 @@ void SandBox::Init(const std::string &config)
 			data().set_visible(false, 1);
 
 			
+
 		}
 		nameFileout.close();
 	}
 	MyTranslate(Eigen::Vector3d(0, 0, -1), true);
-	
+	data_list[0].MyTranslate(Eigen::Vector3d(5, 0, 0),true);
+	tip_pos.push_back((data_list[0].MakeTransd() * Eigen::Vector4d(0, 0, 0, 1)).head(3));
+	//data_list[1].MyTranslate(Eigen::Vector3d(0, 0, 1.6),true);
+	data_list[1].SetCenterOfRotation(Eigen::Vector3d(0, 0, -0.8));
+	Eigen::Vector3d center = data_list[1].GetCenterOfRotation();
+	tip_pos.push_back((data_list[1].MakeTransd() * Eigen::Vector4d(center.x(),center.y(),center.z(), 1)).head(3));
 	data().set_colors(Eigen::RowVector3d(0.9, 0.1, 0.1));
-
+	
 }
 
 SandBox::~SandBox()

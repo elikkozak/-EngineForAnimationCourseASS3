@@ -157,16 +157,26 @@ void Renderer::MouseProcessing(int button)
 			Eigen::Matrix4f tmpM = core().proj;
 			double xToMove = -(double)xrel / core().viewport[3] * (z+2*near) * (far) / (far + 2*near) * 2.0 * tanf(angle / 360 * M_PI) / (core().camera_zoom * core().camera_base_zoom);
 			double yToMove = (double)yrel / core().viewport[3] *(z+2*near) * (far ) / (far+ 2*near) * 2.0 * tanf(angle / 360 * M_PI) / (core().camera_zoom * core().camera_base_zoom);
-		
-			scn->data().TranslateInSystem(scn->GetRotation(), Eigen::Vector3d(xToMove, 0, 0));
-			scn->data().TranslateInSystem(scn->GetRotation(), Eigen::Vector3d(0, yToMove, 0));
+
+			if (scn->selected_data_index > 0) {
+				scn->data(1).TranslateInSystem(scn->GetRotation(), Eigen::Vector3d(xToMove, 0, 0));
+				scn->data(1).TranslateInSystem(scn->GetRotation(), Eigen::Vector3d(0, yToMove, 0));
+			}
+			else
+			{
+				scn->data().TranslateInSystem(scn->GetRotation(), Eigen::Vector3d(xToMove, 0, 0));
+				scn->data().TranslateInSystem(scn->GetRotation(), Eigen::Vector3d(0, yToMove, 0));
+			}
 			scn->WhenTranslate();
 		}
 		else
 		{
-			scn->data().RotateInSystem(Eigen::Vector3d(1, 0, 0), yrel / 100.0);
+			//scn->data().RotateInSystem(Eigen::Vector3d(1, 0, 0), yrel / 100.0);
+			scn->data().RotateInEuler(Eigen::Vector3d(1, 0, 0), yrel / 100.0,false);
+			scn->data().RotateInEuler(Eigen::Vector3d(0, 0, 1), xrel / 100.0,true);
 
-			scn->data().RotateInSystem(Eigen::Vector3d(0, 1, 0), xrel / 100.0);
+			//scn->data().RotateInSystem(Eigen::Vector3d(0, 1, 0), xrel / 100.0);
+
 
 		}
 	}
@@ -186,9 +196,12 @@ void Renderer::MouseProcessing(int button)
 		}
 		else
 		{
-			scn->MyRotate(scn->MakeTransd().block<3, 3>(0, 0));
-			scn->MyRotate(scn->MakeTransd().block<3, 3>(0, 0));
-
+			scn->RotateInSystem(Eigen::Vector3d(1, 0, 0), yrel
+				/ 100);
+			scn->RotateInSystem(Eigen::Vector3d(0, 1, 0), xrel
+				/ 100);
+			// scn->RotateInEuler(Eigen::Vector3d(1, 0, 0), yrel / 100.0);
+			// scn->RotateInEuler(Eigen::Vector3d(0, 0, 1), xrel / 100.0);
 		}
 	}
 }

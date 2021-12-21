@@ -47,6 +47,37 @@ IGL_INLINE void igl::opengl::ViewerData::set_face_based(bool newvalue)
   }
 }
 
+void igl::opengl::ViewerData::
+drawAxis(Eigen::AlignedBox<double, 3> box,int i) {
+    point_size = 10;
+    line_width = 2;
+    Eigen::RowVector3d colorVecR;
+    Eigen::RowVector3d colorVecG;
+    Eigen::RowVector3d colorVecB;
+
+    colorVecR = Eigen::RowVector3d(255, 0, 0);
+    colorVecG = Eigen::RowVector3d(0,255, 0);
+    colorVecB = Eigen::RowVector3d(0,0,255);
+
+    Eigen::RowVector3d center = box.center() - Eigen::Vector3d(0,0,0.8);  //vertices of box are like this
+    Eigen::RowVector3d center_x_1 = center + Eigen::RowVector3d(0.8,0,0);
+    Eigen::RowVector3d center_x_2 = center + Eigen::RowVector3d(-0.8, 0, 0);
+    Eigen::RowVector3d center_y_1 = center + Eigen::RowVector3d(0, 0.8, 0);
+    Eigen::RowVector3d center_y_2 = center + Eigen::RowVector3d(0,  -0.8, 0);
+    Eigen::RowVector3d center_z_1 = center + Eigen::RowVector3d(0, 0, 0.8);
+    Eigen::RowVector3d center_z_2 = center + Eigen::RowVector3d(0,0,-0.8);
+  
+
+    add_edges(center_x_1, center_x_2, colorVecR);
+    add_edges(center_y_1, center_y_2, colorVecG);
+    add_edges(center_z_1, center_z_2, colorVecB);
+
+   
+
+}
+
+
+
 // Helpers that draws the most common meshes
 IGL_INLINE void igl::opengl::ViewerData::set_mesh(
     const Eigen::MatrixXd& _V, const Eigen::MatrixXi& _F)

@@ -23,6 +23,7 @@
 #include <algorithm>
 #include <limits>
 #include <cassert>
+#include <math.h>
 
 #include <igl/project.h>
 //#include <igl/get_seconds.h>
@@ -175,7 +176,16 @@ namespace glfw
     {
       data().grid_texture();
     }
-    
+
+
+
+
+    //DRAW AN AXIS
+    data().tree.init(data().V, data().F);
+    igl::AABB<Eigen::MatrixXd, 3> tree = data().tree;
+    Eigen::AlignedBox<double, 3> box = tree.m_box;
+    data().drawAxis(box, selected_data_index);
+
 
     //for (unsigned int i = 0; i<plugins.size(); ++i)
     //  if (plugins[i]->post_load())
@@ -265,8 +275,127 @@ namespace glfw
 
     if (fname.length() == 0)
       return;
-    
+
     this->load_mesh_from_file(fname.c_str());
+  }
+
+    
+  IGL_INLINE void Viewer::fix_myTip()
+  {
+      for (int i = 0; i < data_list.size(); i++)
+      {
+          Eigen::Vector3d center = data_list[i].GetCenterOfRotation();
+          tip_pos[i] = ((CalcParentsTrans(i) * data_list[i].MakeTransd() * Eigen::Vector4d(center.x(), center.y(), center.z(), 1)).head(3));
+      }
+      
+  }
+  IGL_INLINE void Viewer::CCD()
+  {
+      fix_myTip();
+    
+      Eigen::Vector3d E = tip_pos[num_of_links] + (CalcParentsTrans(num_of_links).block<3,3>(0,0) * data_list[num_of_links].GetRotation() * Eigen::Vector3d(0, 0, 1.6));
+      std::cout << E.transpose() << std::endl;
+      Eigen::Vector3d D = tip_pos[0];
+    if((E-D).norm()<0.1)
+    {
+		std::cout << "reach\n";
+        std::cout << D.transpose() << std::endl;
+        std::cout << E.transpose() << std::endl;
+        
+        return;
+    }
+    if((tip_pos[1]-D).norm() > 1.6*num_of_links)
+    {
+        std::cout << "cannot reach\n";
+        return;
+    }
+      for (int i = num_of_links; i >= 1 ; --i)
+      {
+          Eigen::Vector3d R = tip_pos[i];
+
+          auto a = E - R;
+          auto b = D - R;
+          double cos_theta = a.normalized().dot(b.normalized());
+          cos_theta = std::min(std::max(cos_theta, -1.0),1.0);
+          double theta =  acos(cos_theta)/10.0;
+          Eigen::Vector3d cross = (a.cross(b).normalized());
+          std::cout << cross.transpose() << " - cross " << theta <<" -theta\n";
+          auto rot = Eigen::AngleAxisd(theta,cross).toRotationMatrix();
+          E = rot * (E-R) + R;
+          data_list[i].RotateInSystem(cross, theta);
+          for (int j = i+1; j <= num_of_links; ++j)
+          {
+              tip_pos[j] = rot * (tip_pos[j] - R) + R;
+          }
+			
+      }
+      fix_myTip();
+
+      
+  }
+
+  IGL_INLINE void Viewer::Fabrik()
+  {
+
+      std::vector<Eigen::Vector3d> new_joint = tip_pos;
+      Eigen::Vector3d T = tip_pos[0];
+      double r_i = 0.0;
+      double lambda_i = 0;
+      Eigen::Vector3d E = tip_pos[num_of_links] + (CalcParentsTrans(num_of_links).block<3, 3>(0, 0) * data_list[num_of_links].GetRotation() * Eigen::Vector3d(0, 0, 1.6));
+
+
+      if ((tip_pos[1] - T).norm() > 1.6 * num_of_links)
+      {
+	      for (int i = 1; i < num_of_links; ++i)
+	      {
+              std::cout << "BITCH23\n";
+              r_i = (T - new_joint[i]).norm();
+              lambda_i = 1.6 / r_i;
+              new_joint[i + 1] = (1 - lambda_i) * new_joint[i] + lambda_i * T;
+	      }
+      }
+
+      else
+      {
+          std::cout << "BITCH\n";
+
+          Eigen::Vector3d B = tip_pos[1];
+          double dif_A = (E - T).norm();
+          new_joint.push_back(E);
+
+          while (dif_A > 0.1)
+          {
+              std::cout << "new_joint.back() " << new_joint.back().transpose() << "\n";
+              std::cout << "T " << T.transpose() <<std::endl;
+              new_joint.back() = T;
+              std::cout << "new_joint.back() "<< new_joint.back().transpose()<<std::endl;
+
+
+
+              for (int i = new_joint.size()-2; i >= 1; --i)
+              {
+                  r_i = (new_joint[i + 1] - new_joint[i]).norm();
+                  lambda_i = 1.6 / r_i;
+                  new_joint[i ] = (1 - lambda_i) * new_joint[i+1] + lambda_i * new_joint[i ];
+              }
+              new_joint[1] = B;
+
+              for (int i = 1; i < new_joint.size() - 1 ; ++i)
+              {
+                  r_i = (new_joint[i + 1] - new_joint[i]).norm();
+                  lambda_i = 1.6 / r_i;
+                  new_joint[i + 1] = (1 - lambda_i) * new_joint[i] + lambda_i * new_joint[i + 1];
+              }
+              dif_A = (new_joint.back() - T).norm();
+              std::cout << "diff A " << dif_A << std::endl;
+          }
+      }
+      std::cout << "HERE\n";
+      for(int i = 1; i < tip_pos.size();i++)
+      {
+          //data_list[i].TranslateInSystem(data_list[i].GetRotation(), new_joint[i]);
+          data_list[i].MyTranslate( new_joint[i],true);
+      }
   }
 
   IGL_INLINE void Viewer::open_dialog_save_mesh()

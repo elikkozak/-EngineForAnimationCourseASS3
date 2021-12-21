@@ -18,6 +18,13 @@ public:
 	void MyRotate(const Eigen::Matrix3d &rot);
 	void RotateInSystem(Eigen::Vector3d rotAxis, double angle);
 	void MyScale(Eigen::Vector3d amt);
+	void TranslateInSystem(Eigen::Matrix4d Mat, Eigen::Vector3d amt, bool preRotation);
+	void RotateInSystem(Eigen::Matrix4d Mat, Eigen::Vector3d rotAxis, double angle);
+	void RotateInEuler(Eigen::Vector3d rotAxis, double angle,bool is_Y);
+	void Movable::SetCenterOfRotation(Eigen::Vector3d amt);
+
+	Eigen::Vector3d GetCenterOfRotation();
+
 
 	Eigen::Matrix3d GetRotation() const{ return Tout.rotation().matrix(); }
 

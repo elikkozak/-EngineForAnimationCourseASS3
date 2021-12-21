@@ -231,11 +231,21 @@ IGL_INLINE void ImGuiMenu::draw_viewer_menu(igl::opengl::glfw::Viewer *viewer, s
       viewer->open_dialog_load_mesh();
       if (viewer->data_list.size() > viewer->parents.size())
       {
-          viewer->parents.push_back(-1);
+          
+          viewer->num_of_links++;
+          viewer->parents.push_back(viewer->parents.size() -1);
+			
+          viewer->data_list[viewer->parents.size() - 1].MyTranslate(Eigen::Vector3d(0, 0, 1.6 * 1), true);
+          viewer->data_list.back().SetCenterOfRotation(Eigen::Vector3d(0, 0, -0.8));
+
+          Eigen::Vector3d center = viewer->data_list.back().GetCenterOfRotation();
+          viewer->tip_pos.push_back((viewer->CalcParentsTrans(viewer->num_of_links)* viewer->data_list.back().MakeTransd() * Eigen::Vector4d(center.x(), center.y(), center.z(), 1)).head(3));
+
           viewer->data_list.back().set_visible(false, 1);
           viewer->data_list.back().set_visible(true, 2);
           viewer->data_list.back().show_faces = 3;
           viewer->selected_data_index = savedIndx;
+         
       }
     }
     ImGui::SameLine(0, p);
