@@ -20,7 +20,7 @@ public:
 	void MyScale(Eigen::Vector3d amt);
 	void TranslateInSystem(Eigen::Matrix4d Mat, Eigen::Vector3d amt, bool preRotation);
 	void RotateInSystem(Eigen::Matrix4d Mat, Eigen::Vector3d rotAxis, double angle);
-	void RotateInEuler(Eigen::Vector3d rotAxis, double angle,bool is_Y);
+	void RotateInEuler(Eigen::Vector3d rotAxis, double angle);
 	void Movable::SetCenterOfRotation(Eigen::Vector3d amt);
 
 	Eigen::Vector3d GetCenterOfRotation();

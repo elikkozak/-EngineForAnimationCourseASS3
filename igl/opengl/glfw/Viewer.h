@@ -73,6 +73,7 @@ namespace glfw
     // Helper functions
 
     IGL_INLINE void open_dialog_load_mesh();
+    IGL_INLINE void fix_mesh_load();
     IGL_INLINE void open_dialog_save_mesh();
 
 	IGL_INLINE void draw() {}
@@ -135,16 +136,19 @@ public:
 	
 	std::vector<int> parents;
     std::vector<Eigen::Vector3d> tip_pos;
+    std::vector<Eigen::Vector3d> new_joint;
 
     size_t selected_data_index;
     int next_data_id;
 	bool isPicked;
 	bool isActive;
+    bool move = false;
 
-    int num_of_links = 1;
+    int num_of_links = 0;
     void CCD();
     void Fabrik();
     void fix_myTip();
+    void print_phi_thetha(int selected_data_index);
 
     
 

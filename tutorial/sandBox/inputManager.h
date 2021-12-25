@@ -155,14 +155,7 @@ static void glfw_key_callback(GLFWwindow* window, int key, int scancode, int act
 		case 'P':
 		case 'p':
 		{
-			int index = scn->selected_data_index;
-			Eigen::Matrix3d mat_rot;
-			if (index == -1)
-				mat_rot = scn->GetRotation().block(0, 0, 3, 3);
-			else
-				scn->data_list[index].GetRotation().block(0, 0, 3, 3);
-			std::cout << "selected data index is  " << index << ": " << std::endl;
-			std::cout << mat_rot << std::endl;
+			scn->print_phi_thetha(scn->selected_data_index);
 			break;
 		}
 		case 'T':
@@ -207,36 +200,32 @@ static void glfw_key_callback(GLFWwindow* window, int key, int scancode, int act
 			rndr->TranslateCamera(Eigen::Vector3f(0, 0, -0.03f));
 			break;
 		case GLFW_KEY_UP:
-			//scn->data().TranslateInSystem(scn->GetRotation(), Eigen::Vector3d(0, 0, 0.8));
-
-			// scn->data().MyRotate(/*(scn->MakeTransd() * scn->data().MakeTransd()).block<3, 3>(0, 0),*/ Eigen::Vector3d(1, 0, 0), 0.05);
-			//scn->data().TranslateInSystem(scn->GetRotation(), Eigen::Vector3d(0, 0, -0.8));
-			scn->data().RotateInEuler(Eigen::Vector3d(1, 0, 0), 0.05,false);
+			scn->data().RotateInEuler(Eigen::Vector3d(1, 0, 0), 0.05);
 
 			//rndr->TranslateCamera(Eigen::Vector3f(0, 0.01f,0));
 			break;
 		case GLFW_KEY_DOWN:
-			// scn->data().MyRotate(/*(scn->MakeTransd() * scn->data().MakeTransd()).block<3, 3>(0, 0),*/ Eigen::Vector3d(1, 0, 0), -0.05);
-			scn->data().RotateInEuler(Eigen::Vector3d(1, 0, 0), -0.05,false);
+			scn->data().RotateInEuler(Eigen::Vector3d(1, 0, 0), -0.05);
 
 			//rndr->TranslateCamera(Eigen::Vector3f(0, -0.01f,0));
 
 			break;
 		case GLFW_KEY_LEFT:
 			// scn->data().RotateInSystem((scn->MakeTransd() * scn->data().MakeTransd()), Eigen::Vector3d(0, 0, 1), 0.05);
-			scn->data().RotateInEuler(Eigen::Vector3d(0, 0, 1), 0.05,true);
+			scn->data().RotateInEuler(Eigen::Vector3d(0, 0, 1), 0.05);
 
 				//rndr->TranslateCamera(Eigen::Vector3f(-0.01f, 0,0));
 			break;
 		case GLFW_KEY_RIGHT:
 			// scn->data().RotateInSystem((scn->MakeTransd() * scn->data().MakeTransd()), Eigen::Vector3d(0, 0, 1), -0.05);
-			scn->data().RotateInEuler(Eigen::Vector3d(0, 0,1 ), -0.05,true);
+			scn->data().RotateInEuler(Eigen::Vector3d(0, 0,1 ), -0.05);
 
 			//rndr->TranslateCamera(Eigen::Vector3f(0.01f, 0, 0));
 			break;
 		case ' ':
-			//scn->CCD();
-			scn->Fabrik();
+			
+			scn->move = !(scn->move);
+
 			break;
 		
 		default: 

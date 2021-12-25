@@ -180,11 +180,7 @@ namespace glfw
 
 
 
-    //DRAW AN AXIS
-    data().tree.init(data().V, data().F);
-    igl::AABB<Eigen::MatrixXd, 3> tree = data().tree;
-    Eigen::AlignedBox<double, 3> box = tree.m_box;
-    data().drawAxis(box, selected_data_index);
+    
 
 
     //for (unsigned int i = 0; i<plugins.size(); ++i)
@@ -279,7 +275,59 @@ namespace glfw
     this->load_mesh_from_file(fname.c_str());
   }
 
-    
+  IGL_INLINE void Viewer::fix_mesh_load()
+  {
+	  for (int i = 1; i < data_list.size(); ++i)
+	  {
+
+          //DRAW AN AXIS
+          data_list[i].tree.init(data().V, data().F);
+          igl::AABB<Eigen::MatrixXd, 3> tree = data().tree;
+          Eigen::AlignedBox<double, 3> box = tree.m_box;
+          data_list[i].drawAxis(box, i);
+
+
+          num_of_links++;
+          if (i == 1) {
+              parents.push_back( - 1);
+          }
+          else
+              parents.push_back(parents.size() - 1);
+
+
+          data_list[i].SetCenterOfRotation(Eigen::Vector3d(0, 0, -0.8));
+          Eigen::Vector3d center = data_list[i].GetCenterOfRotation();
+          data_list[i].MyTranslate(Eigen::Vector3d(0, 0, 1.6 * 1), true);
+
+          tip_pos.push_back((CalcParentsTrans(i) * data_list[i].MakeTransd() * Eigen::Vector4d(center.x(), center.y(), center.z(), 1)).head(3));
+
+          
+	  }
+
+  }
+  IGL_INLINE void Viewer::print_phi_thetha(int selected_data_index)
+  {
+      Eigen::Matrix3d myRot = this->GetRotation();
+	  if(selected_data_index == -1 || selected_data_index ==0)
+	  {
+          std::cout << "no link picked here is the scn rot mat:\n";
+          std::cout << myRot << std::endl;
+	  }
+      else {
+          Eigen::Vector3d ea = myRot.eulerAngles(2, 0, 2);
+
+          Eigen::Matrix3d Phi = Eigen::AngleAxisd(ea[0], Eigen::Vector3d::UnitZ()).toRotationMatrix();
+          Eigen::Matrix3d Theta = Eigen::AngleAxisd(ea[1], Eigen::Vector3d::UnitX()).toRotationMatrix();
+
+          std::cout << "Phi:\n";
+          std::cout << Phi << std::endl;
+
+          std::cout << "Theta:\n";
+          std::cout << Theta << std::endl;
+      }
+  }
+
+
   IGL_INLINE void Viewer::fix_myTip()
   {
       for (int i = 0; i < data_list.size(); i++)
@@ -294,35 +342,33 @@ namespace glfw
       fix_myTip();
     
       Eigen::Vector3d E = tip_pos[num_of_links] + (CalcParentsTrans(num_of_links).block<3,3>(0,0) * data_list[num_of_links].GetRotation() * Eigen::Vector3d(0, 0, 1.6));
-      std::cout << E.transpose() << std::endl;
       Eigen::Vector3d D = tip_pos[0];
-    if((E-D).norm()<0.1)
-    {
-		std::cout << "reach\n";
-        std::cout << D.transpose() << std::endl;
-        std::cout << E.transpose() << std::endl;
-        
-        return;
-    }
-    if((tip_pos[1]-D).norm() > 1.6*num_of_links)
-    {
-        std::cout << "cannot reach\n";
-        return;
-    }
+  	  if((E-D).norm()<0.1){
+		  std::cout << "reach\n";
+	      move = false;
+
+	      return;
+      }
+      if((tip_pos[1]-D).norm() > 1.6*num_of_links){
+          std::cout << "cannot reach\n";
+          move = false;
+
+          return;
+      }
       for (int i = num_of_links; i >= 1 ; --i)
       {
           Eigen::Vector3d R = tip_pos[i];
 
-          auto a = E - R;
-          auto b = D - R;
+          Eigen::Vector3d a = E - R;
+          Eigen::Vector3d b = D - R;
           double cos_theta = a.normalized().dot(b.normalized());
           cos_theta = std::min(std::max(cos_theta, -1.0),1.0);
           double theta =  acos(cos_theta)/10.0;
           Eigen::Vector3d cross = (a.cross(b).normalized());
-          std::cout << cross.transpose() << " - cross " << theta <<" -theta\n";
-          auto rot = Eigen::AngleAxisd(theta,cross).toRotationMatrix();
+          Eigen::Matrix3d rot = Eigen::AngleAxisd(theta,cross).toRotationMatrix();
           E = rot * (E-R) + R;
-          data_list[i].RotateInSystem(cross, theta);
+          Eigen::Matrix3d mat_rot = CalcParentsTrans(i ).block<3, 3>(0, 0) * data_list[i].GetRotation();
+      	  data_list[i].MyRotate(mat_rot.transpose() * cross, theta);
           for (int j = i+1; j <= num_of_links; ++j)
           {
               tip_pos[j] = rot * (tip_pos[j] - R) + R;
@@ -331,24 +377,23 @@ namespace glfw
       }
       fix_myTip();
 
-      
   }
 
   IGL_INLINE void Viewer::Fabrik()
   {
-
-      std::vector<Eigen::Vector3d> new_joint = tip_pos;
+      fix_myTip();
+      
       Eigen::Vector3d T = tip_pos[0];
       double r_i = 0.0;
       double lambda_i = 0;
-      Eigen::Vector3d E = tip_pos[num_of_links] + (CalcParentsTrans(num_of_links).block<3, 3>(0, 0) * data_list[num_of_links].GetRotation() * Eigen::Vector3d(0, 0, 1.6));
+      Eigen::Vector3d center = data_list[num_of_links].GetCenterOfRotation();
+      Eigen::Vector3d E = ((CalcParentsTrans(num_of_links) * data_list[num_of_links].MakeTransd() * Eigen::Vector4d(center.x(), center.y(), center.z() + 1.6, 1)).head(3));
 
 
       if ((tip_pos[1] - T).norm() > 1.6 * num_of_links)
       {
 	      for (int i = 1; i < num_of_links; ++i)
 	      {
-              std::cout << "BITCH23\n";
               r_i = (T - new_joint[i]).norm();
               lambda_i = 1.6 / r_i;
               new_joint[i + 1] = (1 - lambda_i) * new_joint[i] + lambda_i * T;
@@ -357,21 +402,23 @@ namespace glfw
 
       else
       {
-          std::cout << "BITCH\n";
 
           Eigen::Vector3d B = tip_pos[1];
           double dif_A = (E - T).norm();
-          new_joint.push_back(E);
 
+          if (dif_A > 0.1){
+	          new_joint = tip_pos;
+	          new_joint.push_back(E);
+          }
+          else
+          {
+              std::cout << "touch\n";
+              move = false;
+              return;
+          }
           while (dif_A > 0.1)
           {
-              std::cout << "new_joint.back() " << new_joint.back().transpose() << "\n";
-              std::cout << "T " << T.transpose() <<std::endl;
               new_joint.back() = T;
-              std::cout << "new_joint.back() "<< new_joint.back().transpose()<<std::endl;
-
-
-
               for (int i = new_joint.size()-2; i >= 1; --i)
               {
                   r_i = (new_joint[i + 1] - new_joint[i]).norm();
@@ -387,14 +434,33 @@ namespace glfw
                   new_joint[i + 1] = (1 - lambda_i) * new_joint[i] + lambda_i * new_joint[i + 1];
               }
               dif_A = (new_joint.back() - T).norm();
-              std::cout << "diff A " << dif_A << std::endl;
           }
       }
-      std::cout << "HERE\n";
-      for(int i = 1; i < tip_pos.size();i++)
+     
+      
+    
+      for (int i = 1; i <= num_of_links ; ++i)
       {
-          //data_list[i].TranslateInSystem(data_list[i].GetRotation(), new_joint[i]);
-          data_list[i].MyTranslate( new_joint[i],true);
+          fix_myTip();
+        
+          E = ((CalcParentsTrans(num_of_links) * data_list[num_of_links].MakeTransd() * Eigen::Vector4d(center.x(), center.y(), center.z() + 1.6, 1)).head(3));
+          Eigen::Vector3d end_joint = i==num_of_links ? ((CalcParentsTrans(num_of_links) * data_list[num_of_links].MakeTransd() * Eigen::Vector4d(center.x(), center.y(), center.z() + 1.6, 1)).head(3)) : tip_pos[i + 1];
+          Eigen::Vector3d R = tip_pos[i];
+          Eigen::Vector3d D = new_joint[i+1];
+          Eigen::Vector3d a = end_joint - R;
+          Eigen::Vector3d b = D - R;
+          double cos_theta = a.normalized().dot(b.normalized());
+          cos_theta = std::min(std::max(cos_theta, -1.0), 1.0);
+          double theta = acos(cos_theta)/10.0 ;
+          Eigen::Vector3d cross = (a.cross(b).normalized());
+          Eigen::Matrix3d mat_rot = CalcParentsTrans(i).block<3, 3>(0, 0) * data_list[i].GetRotation();
+
+          Eigen::Matrix3d rot = Eigen::AngleAxisd(theta, cross).toRotationMatrix();
+          //end_joint =  rot * (end_joint - R) + R;
+
+         
+      	  data_list[i].MyRotate(mat_rot.transpose()*cross, theta);
+          
       }
   }
 

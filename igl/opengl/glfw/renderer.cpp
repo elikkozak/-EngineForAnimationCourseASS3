@@ -172,8 +172,8 @@ void Renderer::MouseProcessing(int button)
 		else
 		{
 			//scn->data().RotateInSystem(Eigen::Vector3d(1, 0, 0), yrel / 100.0);
-			scn->data().RotateInEuler(Eigen::Vector3d(1, 0, 0), yrel / 100.0,false);
-			scn->data().RotateInEuler(Eigen::Vector3d(0, 0, 1), xrel / 100.0,true);
+			scn->data().RotateInEuler(Eigen::Vector3d(1, 0, 0), yrel / 100.0);
+			scn->data().RotateInEuler(Eigen::Vector3d(0, 0, 1), xrel / 100.0);
 
 			//scn->data().RotateInSystem(Eigen::Vector3d(0, 1, 0), xrel / 100.0);
 

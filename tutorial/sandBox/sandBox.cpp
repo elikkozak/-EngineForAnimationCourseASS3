@@ -29,7 +29,7 @@ void SandBox::Init(const std::string &config)
 			std::cout << "openning " << item_name << std::endl;
 			load_mesh_from_file(item_name);
 			
-			parents.push_back(-1);
+			
 			data().add_points(Eigen::RowVector3d(0, 0, 0), Eigen::RowVector3d(0, 0, 1));
 			data().show_overlay_depth = false;
 			data().point_size = 10;
@@ -41,14 +41,14 @@ void SandBox::Init(const std::string &config)
 		}
 		nameFileout.close();
 	}
-	MyTranslate(Eigen::Vector3d(0, 0, -1), true);
+	parents.push_back(-1);
+	MyTranslate(Eigen::Vector3d(-2, 0, -12), true);
 	data_list[0].MyTranslate(Eigen::Vector3d(5, 0, 0),true);
 	tip_pos.push_back((data_list[0].MakeTransd() * Eigen::Vector4d(0, 0, 0, 1)).head(3));
 	//data_list[1].MyTranslate(Eigen::Vector3d(0, 0, 1.6),true);
-	data_list[1].SetCenterOfRotation(Eigen::Vector3d(0, 0, -0.8));
-	Eigen::Vector3d center = data_list[1].GetCenterOfRotation();
-	tip_pos.push_back((data_list[1].MakeTransd() * Eigen::Vector4d(center.x(),center.y(),center.z(), 1)).head(3));
+	
 	data().set_colors(Eigen::RowVector3d(0.9, 0.1, 0.1));
+	fix_mesh_load();
 	
 }
 
@@ -64,6 +64,11 @@ void SandBox::Animate()
 		
 		
 		
+	}
+	if(move)
+	{
+		//CCD();
+		Fabrik();
 	}
 }
 

@@ -105,24 +105,21 @@ void Movable::RotateInSystem(Eigen::Matrix4d Mat, Eigen::Vector3d rotAxis, doubl
 	MyRotate(v.normalized(), angle);
 }
 
-void Movable::RotateInEuler(Eigen::Vector3d rotAxis, double angle,bool is_Y)
+void Movable::RotateInEuler(Eigen::Vector3d rotAxis, double angle)
 {
 	Eigen::Matrix3d myRot = this->GetRotation();
 	Eigen::Vector3d ea = myRot.eulerAngles(2, 0, 2);
 
-	Eigen::Vector3d axis = Eigen::Vector3d::UnitX();
 	auto Z0 = Eigen::AngleAxisd(ea[0], Eigen::Vector3d::UnitZ());
-	auto X0 = Eigen::AngleAxisd(ea[1], axis);
+	auto X0 = Eigen::AngleAxisd(ea[1], Eigen::Vector3d::UnitX());
 	auto Z1 = Eigen::AngleAxisd(ea[2], Eigen::Vector3d::UnitZ());
 
 	auto new_R = Eigen::AngleAxisd(angle, (rotAxis.normalized())).toRotationMatrix();
 	Eigen::Vector3d ea2 = new_R.eulerAngles(2, 0, 2);
 	auto new_Z0 = Eigen::AngleAxisd(ea2[0], Eigen::Vector3d::UnitZ());
-	auto new_X0 = 3.14159 - abs(ea[2]) < 0.1 ? Eigen::AngleAxisd(-ea2[1], axis) : Eigen::AngleAxisd(ea2[1], axis);
+	auto new_X0 = 3.14159 - abs(ea[2]) < 0.1 ? Eigen::AngleAxisd(-ea2[1], Eigen::Vector3d::UnitX()) : Eigen::AngleAxisd(ea2[1], Eigen::Vector3d::UnitX());
 	auto new_Z1 = Eigen::AngleAxisd(ea2[2], Eigen::Vector3d::UnitZ());
 
-	// std::cout << ea.transpose() << std::endl;
-	// std::cout << ea2.transpose() << std::endl;
 
 	auto res = new_Z1 * Z0 * new_X0 * X0 * Z1;
 	Tout.rotate(myRot.transpose());
