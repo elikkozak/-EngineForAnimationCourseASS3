@@ -307,13 +307,15 @@ namespace glfw
   }
   IGL_INLINE void Viewer::print_phi_thetha(int selected_data_index)
   {
-      Eigen::Matrix3d myRot = this->GetRotation();
+      
 	  if(selected_data_index == -1 || selected_data_index ==0)
 	  {
+          Eigen::Matrix3d myRot = this->GetRotation();
           std::cout << "no link picked here is the scn rot mat:\n";
           std::cout << myRot << std::endl;
 	  }
       else {
+          Eigen::Matrix3d myRot = this->data_list[selected_data_index].GetRotation();
           Eigen::Vector3d ea = myRot.eulerAngles(2, 0, 2);
 
           Eigen::Matrix3d Phi = Eigen::AngleAxisd(ea[0], Eigen::Vector3d::UnitZ()).toRotationMatrix();
