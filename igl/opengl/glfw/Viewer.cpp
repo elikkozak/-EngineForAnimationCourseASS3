@@ -384,22 +384,25 @@ namespace glfw
   IGL_INLINE void Viewer::Fabrik()
   {
       fix_myTip();
-      
+    
+
       Eigen::Vector3d T = tip_pos[0];
       double r_i = 0.0;
       double lambda_i = 0;
       Eigen::Vector3d center = data_list[num_of_links].GetCenterOfRotation();
       Eigen::Vector3d E = ((CalcParentsTrans(num_of_links) * data_list[num_of_links].MakeTransd() * Eigen::Vector4d(center.x(), center.y(), center.z() + 1.6, 1)).head(3));
-
+      new_joint = tip_pos;
+      new_joint.push_back(E);
 
       if ((tip_pos[1] - T).norm() > 1.6 * num_of_links)
       {
-	      for (int i = 1; i < num_of_links; ++i)
+	      for (int i = 1; i <= num_of_links; ++i)
 	      {
               r_i = (T - new_joint[i]).norm();
               lambda_i = 1.6 / r_i;
-              new_joint[i + 1] = (1 - lambda_i) * new_joint[i] + lambda_i * T;
+              new_joint[i + 1] = (1 - lambda_i) * tip_pos[i] + lambda_i * T;
 	      }
+
       }
 
       else
@@ -443,26 +446,25 @@ namespace glfw
     
       for (int i = 1; i <= num_of_links ; ++i)
       {
-          fix_myTip();
         
           E = ((CalcParentsTrans(num_of_links) * data_list[num_of_links].MakeTransd() * Eigen::Vector4d(center.x(), center.y(), center.z() + 1.6, 1)).head(3));
           Eigen::Vector3d end_joint = i==num_of_links ? ((CalcParentsTrans(num_of_links) * data_list[num_of_links].MakeTransd() * Eigen::Vector4d(center.x(), center.y(), center.z() + 1.6, 1)).head(3)) : tip_pos[i + 1];
           Eigen::Vector3d R = tip_pos[i];
           Eigen::Vector3d D = new_joint[i+1];
-          Eigen::Vector3d a = end_joint - R;
-          Eigen::Vector3d b = D - R;
-          double cos_theta = a.normalized().dot(b.normalized());
+          Eigen::Vector3d a = (end_joint - R).normalized();
+          Eigen::Vector3d b = (D - R).normalized();
+          double cos_theta = a.dot(b);
           cos_theta = std::min(std::max(cos_theta, -1.0), 1.0);
           double theta = acos(cos_theta)/10.0 ;
-          Eigen::Vector3d cross = (a.cross(b).normalized());
+          Eigen::Vector3d cross = (a.cross(b));
           Eigen::Matrix3d mat_rot = CalcParentsTrans(i).block<3, 3>(0, 0) * data_list[i].GetRotation();
 
           Eigen::Matrix3d rot = Eigen::AngleAxisd(theta, cross).toRotationMatrix();
-          //end_joint =  rot * (end_joint - R) + R;
 
          
       	  data_list[i].MyRotate(mat_rot.transpose()*cross, theta);
-          
+          fix_myTip();
+
       }
   }
 

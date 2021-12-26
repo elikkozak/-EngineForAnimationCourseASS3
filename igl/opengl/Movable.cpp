@@ -114,16 +114,12 @@ void Movable::RotateInEuler(Eigen::Vector3d rotAxis, double angle)
 	auto X0 = Eigen::AngleAxisd(ea[1], Eigen::Vector3d::UnitX());
 	auto Z1 = Eigen::AngleAxisd(ea[2], Eigen::Vector3d::UnitZ());
 
-	auto new_R = Eigen::AngleAxisd(angle, (rotAxis.normalized())).toRotationMatrix();
-	Eigen::Vector3d ea2 = new_R.eulerAngles(2, 0, 2);
-	auto new_Z0 = Eigen::AngleAxisd(ea2[0], Eigen::Vector3d::UnitZ());
-	auto new_X0 = 3.14159 - abs(ea[2]) < 0.1 ? Eigen::AngleAxisd(-ea2[1], Eigen::Vector3d::UnitX()) : Eigen::AngleAxisd(ea2[1], Eigen::Vector3d::UnitX());
-	auto new_Z1 = Eigen::AngleAxisd(ea2[2], Eigen::Vector3d::UnitZ());
+	Eigen::Matrix3d Rot_mat = Eigen::AngleAxisd(angle, (rotAxis.normalized())).toRotationMatrix();
+	
 
 
-	auto res = new_Z1 * Z0 * new_X0 * X0 * Z1;
-	Tout.rotate(myRot.transpose());
-	Tout.rotate(res);
+	auto res =  Z0 * Rot_mat * X0 * Z1;
+	Tout.rotate(myRot.transpose()*res);
 
 
 	// double x = atan2(myRot(2, 1), myRot(2, 2));
