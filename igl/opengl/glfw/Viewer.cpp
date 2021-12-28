@@ -421,28 +421,25 @@ namespace glfw
               move = false;
               return;
           }
-          while (dif_A > 0.1)
+          
+          new_joint.back() = T;
+          for (int i = new_joint.size()-2; i >= 1; --i)
           {
-              new_joint.back() = T;
-              for (int i = new_joint.size()-2; i >= 1; --i)
-              {
-                  r_i = (new_joint[i + 1] - new_joint[i]).norm();
-                  lambda_i = 1.6 / r_i;
-                  new_joint[i ] = (1 - lambda_i) * new_joint[i+1] + lambda_i * new_joint[i ];
-              }
-              new_joint[1] = B;
-
-              for (int i = 1; i < new_joint.size() - 1 ; ++i)
-              {
-                  r_i = (new_joint[i + 1] - new_joint[i]).norm();
-                  lambda_i = 1.6 / r_i;
-                  new_joint[i + 1] = (1 - lambda_i) * new_joint[i] + lambda_i * new_joint[i + 1];
-              }
-              dif_A = (new_joint.back() - T).norm();
+              r_i = (new_joint[i + 1] - new_joint[i]).norm();
+              lambda_i = 1.6 / r_i;
+              new_joint[i ] = (1 - lambda_i) * new_joint[i+1] + lambda_i * new_joint[i ];
           }
+          new_joint[1] = B;
+
+          for (int i = 1; i < new_joint.size() - 1 ; ++i)
+          {
+              r_i = (new_joint[i + 1] - new_joint[i]).norm();
+              lambda_i = 1.6 / r_i;
+              new_joint[i + 1] = (1 - lambda_i) * new_joint[i] + lambda_i * new_joint[i + 1];
+          }
+          dif_A = (new_joint.back() - T).norm();
+          
       }
-     
-      
     
       for (int i = 1; i <= num_of_links ; ++i)
       {
